@@ -5,12 +5,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Program {
 
-	private static final String USUARIO = "seuLogin";
-    private static final String SENHA = "suaSenha";
+	private static final String USUARIO = "SeuLogin";
+    private static final String SENHA = "SuaSenha";
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/tabajara";
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 
@@ -42,6 +45,7 @@ public class Program {
             System.out.println("2 - Consultar Conta");
             System.out.println("3 - Alterar Conta");
             System.out.println("4 - Remover Conta");
+            System.out.println("5 - Listar Contas");
 
  
 
@@ -56,8 +60,6 @@ public class Program {
                 inserirConta();
                 break;
 
- 
-
             case 2: // consultar conta
                 consultarConta();
                 break;
@@ -67,7 +69,12 @@ public class Program {
             case 4: // remover conta
                 removerConta();
                 break;
+            
+            case 5:
+            	listarContas();
+            	break;
             }
+            
             try {     Thread.sleep(4000);  }
 
  
@@ -166,6 +173,43 @@ public class Program {
         catch(Exception e)  {
             System.out.println("A conta não pôde ser removida, a conta é inválida, não existe no sistema ou o banco está fora do ar");
         }
+    }
+    
+    public static void listarContas()  {
+    	
+    	List<Conta> lista = null;
+    	int contador = 0;
+    	
+    	System.out.println("Essas são todas as contas do Banco Tabajara:");
+    	
+    	try {
+    		lista = r.listarContas();
+     	   
+    			
+    			for(Conta c : lista) {
+    				
+    				System.out.println("===================================");
+    				
+                    System.out.println("Numero da conta: " + c.getNumero());
+                    System.out.println("Nome do cliente: " + c.getNome());
+                    System.out.println("Saldo da conta : " + c.getSaldo());
+                    
+                    System.out.println("===================================");
+            	}
+    			
+    		
+    		
+    		
+        	
+        	
+        	
+        	
+    	}catch (Exception e) {
+			System.out.println("Não existe nenhuma cadastrada...");
+		}
+    	
+    	
+    	
     }
 
  
@@ -337,6 +381,8 @@ interface RepositorioContas  {
  
 
     public void atualizar(Conta conta) throws RepositorioException, ContaNaoCadastradaException;
+    
+    public List<Conta> listarContas () throws RepositorioException;
 }
 
  
@@ -603,6 +649,58 @@ class RepositorioContasMySQL implements RepositorioContas {
  
 
     }
+
+
+
+	
+	public List<Conta> listarContas() throws RepositorioException {
+		
+		Connection con = null;
+		ResultSet rs = null;
+		Statement stmt = null;
+		Conta resposta = null;
+		String query = null;
+		List<Conta> lista = new Vector <>();
+		try {
+			 query = "SELECT numero, nome_cliente,saldo FROM CONTA ";
+			con = (Connection)mecanismoPersistencia.getCanalComunicacao();
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				resposta = new Conta(rs.getString("numero"),rs.getString("nome_cliente"),rs.getDouble("saldo"));
+				lista.add(resposta);
+				
+			}
+			
+		}catch(SQLException ex) {
+			throw new RepositorioException(ex);
+		}
+		
+		catch(Exception e) {
+			throw new RepositorioException(e);
+		}
+		
+		finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                }
+                catch (Exception exception1) { }
+            }
+
+ 
+
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                }
+                catch (Exception exception2) { }
+            }
+        }
+		
+		
+		return lista;
+	}
 }       
 
 
