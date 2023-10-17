@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class Program {
 
-	private static final String USUARIO = "root";
-    private static final String SENHA = "root";
+	private static final String USUARIO = "seuLogin";
+    private static final String SENHA = "suaSenha";
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/tabajara";
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 
