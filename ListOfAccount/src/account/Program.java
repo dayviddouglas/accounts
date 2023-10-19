@@ -178,7 +178,7 @@ public class Program {
     public static void listarContas()  {
     	
     	List<Conta> lista = null;
-    	int contador = 0;
+    	int contador = 1;
     	
     	System.out.println("Essas são todas as contas do Banco Tabajara:");
     	
@@ -186,17 +186,18 @@ public class Program {
     		lista = r.listarContas();
      	   
     			
+    			
     			for(Conta c : lista) {
     				
     				System.out.println("===================================");
-    				
+    				System.out.println("Conta "+ contador+ ":");
                     System.out.println("Numero da conta: " + c.getNumero());
                     System.out.println("Nome do cliente: " + c.getNome());
                     System.out.println("Saldo da conta : " + c.getSaldo());
                     
                     System.out.println("===================================");
+                    contador++;
             	}
-    			
     		
     		
     		
